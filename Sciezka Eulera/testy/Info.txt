@@ -1,0 +1,9 @@
+Testy do zadania nr 7.
+Graf jest grafem skierowanym, reprezentowanym przez 
+macierz s¹siedztwa (para (i,j) w macierzy to liczba œcie¿ek i->j).
+Przy wypisywaniu œcie¿ki Eulera  zachodzi warunek, 
+¿e numer pocz¹tku < numeru koñca drogi. 
+Oznaczenia dla plików output:
+n - nie ma cyklu ani drogi w grafie,
+c - istnieje cykl Eulera,
+s - istnieje droga Eulera.
