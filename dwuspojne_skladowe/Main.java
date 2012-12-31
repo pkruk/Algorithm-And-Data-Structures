@@ -26,6 +26,7 @@ public class Main {
 		DFS(gt);
 		System.out.println("\n" + gt.toString());
 		
+		
 	}
 	
 
@@ -43,7 +44,7 @@ public class Main {
 			Node u = g.get(i);
 		//	System.out.println(g.toString());
 			if (u.color == BIALY){
-				System.out.println("U : " + u.index);
+				System.out.println("U : " + u.index +1);
 				DFS_VISIT(g,u);
 			}
 			//System.out.println(g.toString());

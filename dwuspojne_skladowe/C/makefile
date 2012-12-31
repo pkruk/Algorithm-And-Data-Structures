@@ -2,7 +2,7 @@ ZRODLA=$(wildcard *.cpp)
 OBIEKTY=$(patsubst %.cpp, %.o, $(ZRODLA))
 CC=clang++
 FLAGI=
-PROGRAM=boss
+PROGRAM=zmirlacz
 
 $(PROGRAM): $(OBIEKTY)
 	# Linkujemy
