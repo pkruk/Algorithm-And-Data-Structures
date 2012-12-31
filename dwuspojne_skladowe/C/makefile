@@ -21,6 +21,7 @@ $(PROGRAM): $(OBIEKTY)
 %.o: %.cpp %.hpp
 	# Kompilacja
 	$(CC) -c $< -o $@
-
+clean:
+	rm -rf *.o
 
 

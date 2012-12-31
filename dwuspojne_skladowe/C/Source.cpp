@@ -5,29 +5,36 @@
 #include <string>
 #include <fstream>
 #define wyswietl(a) {  cout << "\033[1;31m" << a <<"	\033[0m\n"; };
-
+#define FOREACH(i,v) for(typeof(v.end()) i = v.begin(); i != v.end(); i++)
 using namespace std;
 
 
 typedef vector <int> V;
-V v,pi; // lista wierzcholkow i poprzednikow
+
+//zmienne 
+V v,pi; // lista czasow wejscia 
 vector<V> adj; //macierz sasiadow bjaaacz 
-int cnt;
-int len;
-int nieskonczonosc = 100000000;
-V skladowe;
-V mosty;
-bool flaga = true;
+int cnt; // timer 
+int len; // dlugosc listy wierzcholkow
+int nieskonczonosc = 100000000; //nieskonczonosc do dfs
+V skladowe; // na skladowe
+V mosty; // vector na wspolrzedne MOSTOW
+bool flaga = true; // flaga do dfs gdy chcemy odczytac mosty a potem dwuspojne skladowe
+// end zmienne 
 
-// Mniej wazne funkcje : 
-void konsola();
-void init(int len);
-int dfsvisit(int u);
-bool in(int gdzie,int co);
+//  funkcje : 
+void wypiszADJ(); // wypisuje tablice sasiadow
+void konsola(); //odczyt z konsoli
+void init(int len); //inicjuje vektory
+int dfsvisit(int u);//inicjuje i zaczyna dfsa
+bool in(int gdzie,int co); //sprawdza czy w danym wektorze jest szukana wartosc
 bool check(); // sprawdza czy jest skierowany czy nieskierowany
-void wypisz_skladowe();
+void wypisz_skladowe(); //wypisuje cale skladowe!
 void dfs();
-
+void odczyt(); //czyta z pliku txt
+void answer(bool f); //odpowiedzi wytyczne do programu 
+void wywal_mosty();
+// end funkcje
 
 void answer(bool f){
 	if (f == true){
@@ -38,26 +45,59 @@ void answer(bool f){
 		wypisz_skladowe();
 		int mod = 0;
 		cout << "\tMosty" << endl;
-		for (vector<int>::iterator it = mosty.begin(); it != mosty.end(); it++){
+		FOREACH(it,mosty){
 			if ( mod % 2 == 0)
 				cout << endl;
 			mod++;
 			cout << *it << " ";	
 		}
 		cout << endl;
+		wywal_mosty();
 	}
 	else
 		cout << "n" << endl;
 
 }
 
+void usunkrawedz(int z, int jaka){ 
+	cout << " z\t " << z <<" " << jaka << endl;	
+	FOREACH(it,adj[z]) {
+		cout << *it << " " ;
+		if (*it == jaka) {
+			cout << "Usuwam " << *it << endl;
+			adj[z].erase(it);
+		}
+	}
+}
 
+void wywal_mosty(){
+	
+	vector<int>::iterator i = mosty.begin();
+	cout << "---";
+	vector<int>::iterator j = i++;
+	while ( j != mosty.end() ){
+		cout <<"ide" << *i << " " << *j << endl;
+		usunkrawedz(*i,*j);
+		usunkrawedz(*j,*i);	
+	//	wypiszADJ();
+		i++; 
+		if ( i == mosty.end() )
+			j = mosty.end();
+		else
+			j++;
+	}
+	cout << "WCHODZE" << endl;
+//	usunkrawedz(*i,*j);
+//	usunkrawedz(*j,*i);
+	wypiszADJ();
+}
 
 
 void dfs(){
 	init(len);
 	for (int i = 0; i < len; i++)
 		if (v[i] == nieskonczonosc){
+			cout << "X : " << i << endl;
 			if(flaga == true)
 				skladowe.push_back(i);
 			pi[i] = i;
@@ -67,7 +107,8 @@ void dfs(){
 
 int main(int argc, const char *argv[])
 {
-	konsola();
+//	konsola();
+	odczyt();
 	return 0;
 }
 
@@ -93,6 +134,40 @@ int dfsvisit(int u){
 		mosty.push_back(u+1); mosty.push_back(pi[u] +1);
 	}
 	return ans;
+}
+
+void odczyt(){
+	string wejscie = ".//testy//input8.txt";
+	char* w = new char [wejscie.size()];
+	for (int  i = 0; i < wejscie.size(); i++)
+		w[i] = wejscie[i];
+//	while (*w != '\0')
+//		cout << *w++;
+//	cout << endl;
+	ifstream czytaj;
+	czytaj.open(w);
+	czytaj >> len;
+	adj.clear(); adj.resize(len);
+	cout << "rozmiar : " << len << endl;
+	for(int i = 0; i < len; i++){
+		int l_s;
+		int t;
+		czytaj >> l_s;
+		for(int j = 0; j < l_s; j++){
+			czytaj >> t;
+			--t;
+			adj[i].push_back(t);
+		}
+	}	
+	czytaj.close();
+	for(int i = 0; i < len; i++){
+		cout << "i : " << i + 1 << " | ";
+		FOREACH(it,adj[i])
+			cout << (*it +1)<< " ";
+			cout << endl;
+	}
+	bool f = check();
+	answer(f);
 }
 
 
@@ -155,7 +230,7 @@ bool check(){
 
 bool in(int gdzie,int co){
 	V t = adj[gdzie];
-	for (vector<int>::iterator it = t.begin(); it != t.end(); it++)
+	FOREACH(it,t)
 		if(*it == co)
 			return true;
 	return false;
@@ -167,3 +242,14 @@ void init(int len){
 	pi.resize(len);
 	cnt = 1;
  }// sprawdzamy :)!
+
+
+void wypiszADJ(){
+	for (int i = 0; i < len; i++){
+		cout << "i : " << i +1 << " | ";
+		FOREACH(it,adj[i]) {
+			cout << *it +1<< " ";
+		}
+	cout << endl;
+	}
+}
