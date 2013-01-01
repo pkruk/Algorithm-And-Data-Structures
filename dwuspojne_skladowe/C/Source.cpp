@@ -12,8 +12,8 @@ using namespace std;
 typedef vector <int> V;
 
 //zmienne 
-V v,pi; // lista czasow wejscia 
-vector<V> adj; //macierz sasiadow bjaaacz 
+V v,pi; // lista czasow wejscia i poprzednicy
+vector<V> adj; //macierz sasiadow 
 int cnt; // timer 
 int len; // dlugosc listy wierzcholkow
 int nieskonczonosc = 100000000; //nieskonczonosc do dfs
@@ -52,44 +52,41 @@ void answer(bool f){
 			cout << *it << " ";	
 		}
 		cout << endl;
+		wypiszADJ();
+		cout << "\n\n\n";
 		wywal_mosty();
+		cout << "\n\n";
+		wypiszADJ();
 	}
 	else
 		cout << "n" << endl;
 
 }
 
-void usunkrawedz(int z, int jaka){ 
-	cout << " z\t " << z <<" " << jaka << endl;	
-	FOREACH(it,adj[z]) {
-		cout << *it << " " ;
-		if (*it == jaka) {
-			cout << "Usuwam " << *it << endl;
-			adj[z].erase(it);
+void usunkrawedz(int z, int jaka){
+//	cout <<"Z : " << z <<  " JAKA " << jaka << endl;
+	--jaka;
+	FOREACH(i,adj[z-1]){
+		if (*i == jaka){
+//			cout << "ERASE" << endl;
+			adj[z-1].erase(i);
+			return;
 		}
 	}
+	cout << endl;
 }
 
 void wywal_mosty(){
-	
-	vector<int>::iterator i = mosty.begin();
-	cout << "---";
-	vector<int>::iterator j = i++;
-	while ( j != mosty.end() ){
-		cout <<"ide" << *i << " " << *j << endl;
-		usunkrawedz(*i,*j);
-		usunkrawedz(*j,*i);	
-	//	wypiszADJ();
-		i++; 
-		if ( i == mosty.end() )
-			j = mosty.end();
-		else
-			j++;
+	cout << " MOSTY USUNIETE .... " << endl;
+	for (vector<int>::iterator it = mosty.begin(); it != mosty.end(); it+=2){
+		
+		vector<int>::iterator i = it+1;
+		cout << "Proba usuniecia mostu : " << *it  << " --- " << *i << endl;
+		usunkrawedz(*it,*i);
+		usunkrawedz(*i,*it);
+		cout << "Usuniecie zakonczone sukcesem" << endl;
 	}
-	cout << "WCHODZE" << endl;
-//	usunkrawedz(*i,*j);
-//	usunkrawedz(*j,*i);
-	wypiszADJ();
+//	wypiszADJ();
 }
 
 
@@ -160,12 +157,6 @@ void odczyt(){
 		}
 	}	
 	czytaj.close();
-	for(int i = 0; i < len; i++){
-		cout << "i : " << i + 1 << " | ";
-		FOREACH(it,adj[i])
-			cout << (*it +1)<< " ";
-			cout << endl;
-	}
 	bool f = check();
 	answer(f);
 }
