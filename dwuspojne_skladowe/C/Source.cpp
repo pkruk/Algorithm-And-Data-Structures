@@ -14,12 +14,14 @@ typedef vector <int> V;
 //zmienne 
 V v,pi; // lista czasow wejscia i poprzednicy
 vector<V> adj; //macierz sasiadow 
+vector<V> adjT;
 int cnt; // timer 
 int len; // dlugosc listy wierzcholkow
 int nieskonczonosc = 100000000; //nieskonczonosc do dfs
 V skladowe; // na skladowe
 V mosty; // vector na wspolrzedne MOSTOW
 bool flaga = true; // flaga do dfs gdy chcemy odczytac mosty a potem dwuspojne skladowe
+vector <V>dwuskladowe;
 // end zmienne 
 
 //  funkcje : 
@@ -33,7 +35,10 @@ void wypisz_skladowe(); //wypisuje cale skladowe!
 void dfs();
 void odczyt(); //czyta z pliku txt
 void answer(bool f); //odpowiedzi wytyczne do programu 
-void wywal_mosty();
+void wywal_mosty(); //usuwa mosty POMYSL BLEDNY FUNKCJA DO usuniecia
+void wypiszADJT(); // wypisuje Transponowa maciesz ADJ(Sasiadow)
+void dfsT();
+void wypiszdwuskladowe();
 // end funkcje
 
 void answer(bool f){
@@ -54,40 +59,14 @@ void answer(bool f){
 		cout << endl;
 		wypiszADJ();
 		cout << "\n\n\n";
-		wywal_mosty();
-		cout << "\n\n";
-		wypiszADJ();
+		dfsT();
+		wypiszADJT();
 	}
 	else
 		cout << "n" << endl;
 
 }
 
-void usunkrawedz(int z, int jaka){
-//	cout <<"Z : " << z <<  " JAKA " << jaka << endl;
-	--jaka;
-	FOREACH(i,adj[z-1]){
-		if (*i == jaka){
-//			cout << "ERASE" << endl;
-			adj[z-1].erase(i);
-			return;
-		}
-	}
-	cout << endl;
-}
-
-void wywal_mosty(){
-	cout << " MOSTY USUNIETE .... " << endl;
-	for (vector<int>::iterator it = mosty.begin(); it != mosty.end(); it+=2){
-		
-		vector<int>::iterator i = it+1;
-		cout << "Proba usuniecia mostu : " << *it  << " --- " << *i << endl;
-		usunkrawedz(*it,*i);
-		usunkrawedz(*i,*it);
-		cout << "Usuniecie zakonczone sukcesem" << endl;
-	}
-//	wypiszADJ();
-}
 
 
 void dfs(){
@@ -100,6 +79,20 @@ void dfs(){
 			pi[i] = i;
 			dfsvisit(i);
 		}
+}
+int R = 0;
+void dfsT(){
+	init(len);
+	for (int i = 0; i < len; i++){
+		if ( v[i] == nieskonczonosc ) {
+			cout << " XXXXXX ";
+			dwuskladowe[R].push_back(i);
+			pi[i] = i;
+			cout << "YYYYYYY";
+			dfsvisit(i);
+		}
+		R++;
+	}
 }
 
 int main(int argc, const char *argv[])
@@ -122,19 +115,20 @@ int dfsvisit(int u){
 			pi[tmp] = u; //nowy poprzednik na drodze
 			tmp = dfsvisit(tmp); //szukamy od niego drogi
 		}
-		if(v[ans] > v[tmp]){
+		if(v[ans] > v[tmp]){ 
+			cout << "ans " << ans << " = " << v[ans] << " " << tmp << "=" << v[tmp] << endl;
 			ans = tmp;
 		}
 	}
 	if (ans == u && pi[u] != u && flaga == true){
-	//	cout << "Most: "  << u +1 << " " << pi[u] +1 << endl;
+		cout << "Most: "  << u +1 << " " << pi[u] +1 << endl;
 		mosty.push_back(u+1); mosty.push_back(pi[u] +1);
 	}
 	return ans;
 }
 
 void odczyt(){
-	string wejscie = ".//testy//input8.txt";
+	string wejscie = ".//testy//input9.txt";
 	char* w = new char [wejscie.size()];
 	for (int  i = 0; i < wejscie.size(); i++)
 		w[i] = wejscie[i];
@@ -145,6 +139,7 @@ void odczyt(){
 	czytaj.open(w);
 	czytaj >> len;
 	adj.clear(); adj.resize(len);
+	adjT.clear(); adjT.resize(len);
 	cout << "rozmiar : " << len << endl;
 	for(int i = 0; i < len; i++){
 		int l_s;
@@ -154,6 +149,7 @@ void odczyt(){
 			czytaj >> t;
 			--t;
 			adj[i].push_back(t);
+			adjT[t].push_back(i);
 		}
 	}	
 	czytaj.close();
@@ -244,3 +240,51 @@ void wypiszADJ(){
 	cout << endl;
 	}
 }
+
+void wypiszADJT(){
+	for(int i = 0; i < len; i++){
+		cout <<"iT : " << i +1 << " = ";
+		FOREACH(it,adj[i])
+			cout << *it +1 << " ";
+		cout <<endl;
+	}
+}
+
+void wypiszdwuskladowe(){
+	for (int i = 0; i < len; i++) {
+		FOREACH(it,dwuskladowe[i])
+			cout << *it << " ";
+		cout << endl;
+	}
+}
+
+
+
+void usunkrawedz(int z, int jaka){
+//	cout <<"Z : " << z <<  " JAKA " << jaka << endl;
+	--jaka;
+	FOREACH(i,adj[z-1]){
+		if (*i == jaka){
+//			cout << "ERASE" << endl;
+			adj[z-1].erase(i);
+			return;
+		}
+	}
+	cout << endl;
+}
+
+void wywal_mosty(){
+	cout << " MOSTY USUNIETE .... " << endl;
+	for (vector<int>::iterator it = mosty.begin(); it != mosty.end(); it+=2){
+		
+		vector<int>::iterator i = it+1;
+		cout << "Proba usuniecia mostu : " << *it  << " --- " << *i << endl;
+		usunkrawedz(*it,*i);
+		usunkrawedz(*i,*it);
+		cout << "Usuniecie zakonczone sukcesem" << endl;
+	}
+//	wypiszADJ();
+}
+
+
+

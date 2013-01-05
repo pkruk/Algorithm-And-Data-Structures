@@ -5,7 +5,7 @@
 import java.util.*;
 import java.io.*;
 public class Main{
-
+	public static int zliczuj = 0;
     public static void main (String [] args)throws IOException{
         System.out.println("Hello");
 		Scanner in = new Scanner(System.in);
@@ -14,19 +14,19 @@ public class Main{
 		if(a == 1){
 			example();
 		} else if (a == 3){
-			txt("./testy/input0.txt");
-			txt("./testy/input1.txt");
-			txt("./testy/input2.txt"); 
-			txt("./testy/input3.txt");
-			txt("./testy/input4.txt");
-			txt("./testy/input5.txt");
+			 txt("./testy/input0.txt");
+			 txt("./testy/input1.txt");
+			 txt("./testy/input2.txt"); 
+			 txt("./testy/input3.txt");
+			 txt("./testy/input4.txt");
+			 txt("./testy/input5.txt");
 			txt("./testy/input6.txt");
-			txt("./testy/input7.txt");
+			txt("./testy/input7.txt"); 
 			txt("./testy/input8.txt");
-			txt("./testy/input9.txt");
-			txt("./testy/input10.txt");
-			txt("./testy/input11.txt");
-			txt("./testy/input12.txt");
+			 txt("./testy/input9.txt");
+			 txt("./testy/input10.txt");
+			 txt("./testy/input11.txt");
+			 txt("./testy/input12.txt"); 
 		} else {
 			int len = in.nextInt();
 			int tab[][] = new int[len][len];
@@ -73,10 +73,12 @@ public class Main{
 			System.out.println();
 		}*/
 		g.DisplayAdjMat();
+		g.Display();
 		g.euler(0);
 		
 		String wyjscie = g.wyswietl();
-		String traktor = a.substring(0,a.length()-4) + "_out.txt";
+		String traktor = "./testy/Moje/output"+zliczuj +".txt";
+		++zliczuj;
 		FileWriter out = null;
 		try{
 			out = new FileWriter(traktor);

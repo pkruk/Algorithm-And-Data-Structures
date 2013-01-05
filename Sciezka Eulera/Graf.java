@@ -16,6 +16,9 @@ public class Graf{
 		for(int i = 0; i < tmp.lista.size(); i = 0){
 			liczba_krawedzi--;
 			Node v = tmp.lista.remove(0);
+			if (tmp == v) {
+				drogowy.addLast(v.index);
+				continue;}
 			x++;
 			euler(v.index);
 		}
@@ -27,17 +30,28 @@ public class Graf{
 		drogowy.addLast(u);
 		
 		while(dfs(u) == 0 && !drogowy.isEmpty()){
-			if(liczba_krawedzi == 0)
+			if (liczba_krawedzi == 0) {
 				break;
+			}
+			System.out.println(drogowy.toString() + " CYKL : " + cykl.toString() + " u: " + u);
+			Scanner in = new Scanner(System.in);
+		//	int a = in.nextInt();
 			cykl.addLast(u);
 			drogowy.removeLast();
-			System.out.println(ANSI_BLUE + "L" + liczba_krawedzi + " "+u + drogowy.toString() + " " + cykl.toString() + ANSI_RESET);	
-			if(!drogowy.isEmpty())
+			if (!drogowy.isEmpty())
 				u = drogowy.getLast();
+			if (wierzcholki[u].lista.size() == 0)
+				return;
+
 		}
-		if(cykl.size() > 0 && drogowy.size() > 0 && (cykl.getFirst() != drogowy.getFirst()))
+		
+		if(cykl.size() > 1 && drogowy.size() > 0 && (cykl.getLast() != drogowy.getFirst())){
 			flaga = false;
-		else {
+			System.out.println("FLAGA NA FALSE");
+			System.out.println(drogowy.toString());
+			System.out.println(cykl.toString());
+			System.out.println("DROGOWY : " + drogowy.getFirst() + "||" + cykl.getLast());
+		} else {
 			while(!drogowy.isEmpty())
 				cykl.addLast(drogowy.removeLast());
 		}
@@ -73,8 +87,9 @@ public class Graf{
 		while(!cykl.isEmpty()){
 			int a = cykl.removeLast() +1;
 			System.out.print(ANSI_RED + ""+ a + " ");
-			wyjscie += " " +a;
+			wyjscie += a + " ";
 		}
+		wyjscie += "\n";
 		System.out.println(ANSI_RESET);
 		System.out.println("_______");
 		return wyjscie;
@@ -84,9 +99,9 @@ public class Graf{
 		System.out.println(ANSI_CYAN);
 		for(int i = 0; i < len; i++){
 			Node tmp = wierzcholki[i];
-			System.out.print(tmp.index + "=");
+			System.out.print((tmp.index+1) + "=");
 			for(int j = 0; j < tmp.lista.size(); j++)
-				System.out.print(tmp.lista.get(j).index + " -- ");
+				System.out.print((tmp.lista.get(j).index +1 ) + " -- ");
 			System.out.println();
 		}
 		System.out.println(ANSI_RESET);

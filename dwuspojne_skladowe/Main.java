@@ -37,6 +37,8 @@ public class Main {
 			Node u = g.get(i);
 			u.color = BIALY;
 			u.pi = null;
+			u.f = 10000000;
+			u.d = 10000000;
 		}
 		time = 0;
 		System.out.println("Start DFS : " + time);
@@ -55,18 +57,28 @@ public class Main {
 		++time;
 		u.d = time;
 		u.color = SZARY;
-	//	System.out.println(g.toString());
+		Node t = u;
+//		System.out.println(g.toString());
 		for (int i = 0; i < u.sasiedzi.size(); i++){
 			Node v = u.sasiedzi.get(i);
+			if (u == v) continue; // cykl ignorowany
+			if (v == u.pi) continue; //poprzednik ignored
 			if ( v.color == BIALY ){
 				v.pi = u;
 				DFS_VISIT(g,v);
 			}
-		}	
+			if (u.d > v.d) {
+				u = v;
+				System.out.println(u.index + "| " + v.index);
+			}
+		}
+		u.color = CZARNY;	
+		if (u == t && u.pi != null && u.color == CZARNY)
+			System.out.println("MOST : " +  (u.index+1) + " " + (u.pi.index+1));
 		u.color = CZARNY;
 		++time;
 		u.f = time;
-	}
+		}
 	
 public static boolean debug  = false;
 	public static void test(){
@@ -90,13 +102,14 @@ public static boolean debug  = false;
 		g.dodajSasiadow(6,tab6);
 		g.printSasiedzi();
 		//nie ma sasiadow!
-		g.get(0).color = 'B';
-		g.get(2).color = 'G';
+	//	g.get(0).color = 'B';
+	//	g.get(2).color = 'G';
 		if(debug == true) {
 			System.out.println(g.toString() + "   ");
 			System.out.println("\n\n");
  		}
-		strongly_connected_components(g);
+		DFS(g);
+	//	strongly_connected_components(g);
 	}
 	public static void konsola(){
 		Scanner in = new Scanner(System.in);
@@ -115,10 +128,11 @@ public static boolean debug  = false;
 		}
 		System.out.println(".................................");
 		g.printSasiedzi();
-		System.out.println(g.toString() + "\n\n ");
-		strongly_connected_components(g);
-		
+//		System.out.println(g.toString() + "\n\n ");
+	//	strongly_connected_components(g);
+		DFS(g);	
 		System.out.println(".................................................................");
+		System.out.println(g.toString() + "\n");
 		
 	}
 
