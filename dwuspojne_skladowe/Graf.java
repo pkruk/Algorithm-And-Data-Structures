@@ -11,9 +11,9 @@ public class Graf{
 	public void printSasiedzi(){
 		System.out.println(ANSI_RED);
 		for(int i = 0; i < V.size(); i++){
-			System.out.print("V " + i + " :");
+			System.out.print("V " + (i+1) + " :");
 			for(int j = 0; j < V.get(i).sasiedzi.size(); j++)
-				System.out.print(V.get(i).sasiedzi.get(j).index + " -- ");
+				System.out.print((V.get(i).sasiedzi.get(j).index +1)+ " -- ");
 			System.out.println();
 		}
 		System.out.println(ANSI_RESET);

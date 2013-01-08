@@ -3,7 +3,13 @@ import java.io.*;
 
 public class Node { 
 	public String print(){
-		return "[" + index +"," + getColor() + " d: " + d + " f: " + f + "]";
+		return "[" + (index+1) +"," + getColor() + " d: " + d + " f: " + f + getP() + "]";
+	}
+	public String getP(){
+		if (pi == null)
+			return "n";
+		else
+			return " P: " + (pi.index + 1);
 	}
 	public String getColor(){
 		if (color == 'G') // G = Gray

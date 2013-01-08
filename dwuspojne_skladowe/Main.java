@@ -7,109 +7,99 @@ public class Main {
 	{
 		System.out.println(ANSI_BLUE + "HELLO");
 		test();
-		System.out.println("*************************************************************");
-		konsola();
 		System.out.println("END" + ANSI_RESET);
 	}
 
-	public static void strongly_connected_components(Graf g){
-		DFS(g);
-		System.out.println(g.toString() + "\n\n");
-		//transponowany!
-		Graf gt = new Graf();
-		for(int i = 0; i < g.len; i++)
-			gt.add(g.get(i).index);
-		for(int i = 0; i < g.len; i++)
-			gt.V.set(i,g.get(i));
-		gt.printSasiedzi();
-		sortuj(gt);
-		DFS(gt);
-		System.out.println("\n" + gt.toString());
-		
-		
-	}
-	
-
-	public static int time;
+	public static int time = 0;
 
 	public static void DFS(Graf g){
 		for (int i = 0; i < g.len; i++){
-			Node u = g.get(i);
-			u.color = BIALY;
-			u.pi = null;
-			u.f = 10000000;
-			u.d = 10000000;
-		}
+			g.V.get(i).color = BIALY;
+			g.V.get(i).pi = null;
+		} // gotowy do startu!
+		///////////////////////////////
+		preorder = new int [g.len];
+		visited = new boolean [g.len];
+		for(int i = 0; i < g.len; visited[i++] = false);
+		low = new int [g.len];
+		for (int i = 0; i < g.len; low[i++] = 999999);
+		//////////////////////////////
 		time = 0;
-		System.out.println("Start DFS : " + time);
-		for(int i = 0; i < g.len; i++){
-			Node u = g.get(i);
-		//	System.out.println(g.toString());
-			if (u.color == BIALY){
-				System.out.println("U : " + u.index +1);
-				DFS_VISIT(g,u);
-			}
-			//System.out.println(g.toString());
-		}
-	}	
+		for (int i = 0; i < g.len; i++)
+			if (g.V.get(i).color == BIALY)
+				DFS_VISIT(g,g.V.get(i));
+	}
 
 	public static void DFS_VISIT(Graf g, Node u){
-		++time;
+		dsads;
+		time++;
 		u.d = time;
 		u.color = SZARY;
-		Node t = u;
-//		System.out.println(g.toString());
-		for (int i = 0; i < u.sasiedzi.size(); i++){
+		for (int i = 0; i < u.sasiedzi.size(); i++) {
 			Node v = u.sasiedzi.get(i);
-			if (u == v) continue; // cykl ignorowany
-			if (v == u.pi) continue; //poprzednik ignored
-			if ( v.color == BIALY ){
+			if (v.color == BIALY){
 				v.pi = u;
-				DFS_VISIT(g,v);
-			}
-			if (u.d > v.d) {
-				u = v;
-				System.out.println(u.index + "| " + v.index);
+				DFS_VISIT(g,v); // idziemy dalej ziaa
 			}
 		}
-		u.color = CZARNY;	
-		if (u == t && u.pi != null && u.color == CZARNY)
-			System.out.println("MOST : " +  (u.index+1) + " " + (u.pi.index+1));
 		u.color = CZARNY;
-		++time;
+		time++;
 		u.f = time;
+		
+	}
+	public static void low(Graf g){
+
+		for (int i = 0; i < g.len; i++){
+			if (!visited[i])
+				low(g,i,g.V.get(i).sasiedzi.get(0).index);
 		}
-	
-public static boolean debug  = false;
+	}
+	public static int licznik = 1;
+	public static void low(Graf g,int v, int parent){
+		visited[v] = true;
+		low[v] = min(g.V.get(v).d,g.V.get(parent).d);
+		System.out.println("v : " + v +" ojciec " + parent );
+	}
+	public static int min(int a, int b){
+		if (a < b)
+			return a;
+		else 
+			return b;
+	}
+	public static int preorder[];
+	public static boolean visited[];
+	public static int low[];
+
+
 	public static void test(){
 		Graf g = new Graf();
 		for (int i = 0; i < 7; i++)
 			g.add(i);
-		int tab[] = {2,7};
+		int tab[] = {2,3};
 		g.dodajSasiadow(0, tab);	
-		int tab1[] = {1,3,6,7};
+		int tab1[] = {1,3};
 		g.dodajSasiadow(1,tab1);
-		int tab2[] = {2,4,5};
+		int tab2[] = {1,2,4};
 		g.dodajSasiadow(2,tab2);
-		int tab3[] = {3,5};
+		int tab3[] = {3,5,7};
 		g.dodajSasiadow(3,tab3);
-		int tab4[] = {3,4};
+		int tab4[] = {4,6};
 		g.dodajSasiadow(4,tab4);
-		int tab5[] = {2,7};
+		int tab5[] = {5,7};
 		g.dodajSasiadow(5,tab5);
-		//int tab6[] = {3,1,2,6};
-		int tab6[] = {1,2,3,6};
+		int tab6[] = {4,6};
 		g.dodajSasiadow(6,tab6);
 		g.printSasiedzi();
-		//nie ma sasiadow!
-	//	g.get(0).color = 'B';
-	//	g.get(2).color = 'G';
-		if(debug == true) {
-			System.out.println(g.toString() + "   ");
-			System.out.println("\n\n");
- 		}
+		System.out.println(g.toString());
 		DFS(g);
-	//	strongly_connected_components(g);
+		sortuj(g);
+		System.out.println(g.toString());
+		g.printSasiedzi();
+		System.out.println("\n\n\n");
+		low(g);
+		for(int i = 0; i < low.length; i++)
+			System.out.print(low[i] + ", ");
+		System.out.println();
 	}
 	public static void konsola(){
 		Scanner in = new Scanner(System.in);
@@ -128,9 +118,6 @@ public static boolean debug  = false;
 		}
 		System.out.println(".................................");
 		g.printSasiedzi();
-//		System.out.println(g.toString() + "\n\n ");
-	//	strongly_connected_components(g);
-		DFS(g);	
 		System.out.println(".................................................................");
 		System.out.println(g.toString() + "\n");
 		
@@ -138,10 +125,10 @@ public static boolean debug  = false;
 
 	public static void  sortuj(Graf g){
 		for(int i = 1; i < g.len; i++){
-			int tmp = g.V.get(i).f;
+			int tmp = g.V.get(i).d;
 			Node t = g.V.get(i);
 			int j = i;
-			while ((j > 0) && (g.V.get(j-1).f  < tmp)){
+			while ((j > 0) && (g.V.get(j-1).d  < tmp)){
 				g.V.set(j,g.V.get(j-1));
 				--j;
 			}

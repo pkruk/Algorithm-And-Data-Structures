@@ -9,6 +9,7 @@ public class Graf{
 
 	Deque <Integer> drogowy = new Deque<Integer>();
 	Deque <Integer> cykl = new Deque<Integer>();
+	Deque <Integer> poprzednicy = new Deque <Integer>();
 	public int liczba_krawedzi = 0;
 	private int dfs(int u){
 		int x = 0; 
@@ -38,15 +39,20 @@ public class Graf{
 		//	int a = in.nextInt();
 			cykl.addLast(u);
 			drogowy.removeLast();
-			if (!drogowy.isEmpty())
+			if (!drogowy.isEmpty()) {
 				u = drogowy.getLast();
+				poprzednicy.addLast(u);
+			}
 			if (wierzcholki[u].lista.size() == 0)
 				return;
 
 		}
 		
 		if(cykl.size() > 1 && drogowy.size() > 0 && (cykl.getLast() != drogowy.getFirst())){
-			flaga = false;
+			if (poprzednicy.getLast() == drogowy.getLast())
+				flaga = true;
+			else
+				flaga = false;
 			System.out.println("FLAGA NA FALSE");
 			System.out.println(drogowy.toString());
 			System.out.println(cykl.toString());
