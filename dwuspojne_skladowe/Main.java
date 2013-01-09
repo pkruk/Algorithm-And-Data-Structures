@@ -31,7 +31,6 @@ public class Main {
 	}
 
 	public static void DFS_VISIT(Graf g, Node u){
-		dsads;
 		time++;
 		u.d = time;
 		u.color = SZARY;
@@ -48,23 +47,34 @@ public class Main {
 		
 	}
 	public static void low(Graf g){
-
+		sortuj(g); // robi transpozycje
 		for (int i = 0; i < g.len; i++){
 			if (!visited[i])
 				low(g,i,g.V.get(i).sasiedzi.get(0).index);
 		}
 	}
 	public static int licznik = 1;
-	public static void low(Graf g,int v, int parent){
-		visited[v] = true;
-		low[v] = min(g.V.get(v).d,g.V.get(parent).d);
-		System.out.println("v : " + v +" ojciec " + parent );
+	public static void low(Graf g,int x,int y){
+		visited[x] = true;
+		Node v = g.V.get(x); // wierzcholek w
+		Node ojciec = g.V.get(y); // ojciec
+		low[x] = min(x,y);
+		for (int i = 0; i < v.sasiedzi.size(); i++){
+			Node u = v.sasiedzi.get(i);
+			if (u != ojciec){
+				if (!visited[u.index]){
+					low(g,u.index,v.index);
+					low[v.index] = min(low[v.index],low[u.index]);
+				} else 
+					low[v.index] = min(low[v.index],g.V.get(u.index).d);
+			}
+		}	
 	}
 	public static int min(int a, int b){
-		if (a < b)
-			return a;
-		else 
+		if (b <= a)
 			return b;
+		else 
+			return a;
 	}
 	public static int preorder[];
 	public static boolean visited[];
@@ -92,7 +102,6 @@ public class Main {
 		g.printSasiedzi();
 		System.out.println(g.toString());
 		DFS(g);
-		sortuj(g);
 		System.out.println(g.toString());
 		g.printSasiedzi();
 		System.out.println("\n\n\n");
