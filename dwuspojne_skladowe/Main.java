@@ -11,75 +11,52 @@ public class Main {
 	}
 
 	public static int time = 0;
-
+	public static boolean visited[];
+	public static int nr[];
+	public static int low[];
 	public static void DFS(Graf g){
-		for (int i = 0; i < g.len; i++){
-			g.V.get(i).color = BIALY;
-			g.V.get(i).pi = null;
-		} // gotowy do startu!
-		///////////////////////////////
-		preorder = new int [g.len];
-		visited = new boolean [g.len];
-		for(int i = 0; i < g.len; visited[i++] = false);
+		visited = new boolean[g.len];
+		nr = new int [g.len];
 		low = new int [g.len];
-		for (int i = 0; i < g.len; low[i++] = 999999);
-		//////////////////////////////
-		time = 0;
-		for (int i = 0; i < g.len; i++)
-			if (g.V.get(i).color == BIALY)
-				DFS_VISIT(g,g.V.get(i));
+		for(int i = 0; i < g.len; low[i] = -1, nr[i] = -1, visited[i] = false,++i);
+		//DFS(g);
+		DFS_BRIDGES(g,0,-1);
 	}
 
-	public static void DFS_VISIT(Graf g, Node u){
+	public static void DFS_BRIDGES(Graf g, int v, int ojciec_v){
+		visited[v] = true;
 		time++;
-		u.d = time;
-		u.color = SZARY;
-		for (int i = 0; i < u.sasiedzi.size(); i++) {
-			Node v = u.sasiedzi.get(i);
-			if (v.color == BIALY){
-				v.pi = u;
-				DFS_VISIT(g,v); // idziemy dalej ziaa
-			}
+		nr[v] = time; g.V.get(v).d = time; low[v] = time;
+		for (int i = 0; i < g.V.get(v).sasiedzi.size(); i++){
+			int u = g.V.get(v).sasiedzi.get(i).index;
+			if ( u != ojciec_v )
+				if( !visited[u]){
+					DFS_BRIDGES(g,u,v);
+					System.out.println((v+1) + " " + (u +1));
+					low[v] = min(low[v],low[u]);
+				}else {
+					System.out.println("****" + (v+1) + " " + (u+1));
+					low[v] = min(low[v],nr[u]);
+				}
 		}
-		u.color = CZARNY;
+		if(low[v] == nr[v] && ojciec_v != -1)
+			System.out.println("Most : " + (v+1) + " --- " + (ojciec_v+1));
+	}
+
+	public static void DFS_VISIT(Graf g, int u){
+		visited[u] = true;
 		time++;
-		u.f = time;
-		
-	}
-	public static void low(Graf g){
-		sortuj(g); // robi transpozycje
-		for (int i = 0; i < g.len; i++){
-			if (!visited[i])
-				low(g,i,g.V.get(i).sasiedzi.get(0).index);
-		}
-	}
-	public static int licznik = 1;
-	public static void low(Graf g,int x,int y){
-		visited[x] = true;
-		Node v = g.V.get(x); // wierzcholek w
-		Node ojciec = g.V.get(y); // ojciec
-		low[x] = min(x,y);
-		for (int i = 0; i < v.sasiedzi.size(); i++){
-			Node u = v.sasiedzi.get(i);
-			if (u != ojciec){
-				if (!visited[u.index]){
-					low(g,u.index,v.index);
-					low[v.index] = min(low[v.index],low[u.index]);
-				} else 
-					low[v.index] = min(low[v.index],g.V.get(u.index).d);
-			}
-		}	
+		g.V.get(u).d = time; nr[u] = time;
+		for(int i = 0; i < g.V.get(u).sasiedzi.size(); i++)
+			if (!visited[g.V.get(u).sasiedzi.get(i).index])
+				DFS_VISIT(g,g.V.get(u).sasiedzi.get(i).index);
 	}
 	public static int min(int a, int b){
-		if (b <= a)
-			return b;
-		else 
+		if (a <= b)
 			return a;
+		else 
+			return b;
 	}
-	public static int preorder[];
-	public static boolean visited[];
-	public static int low[];
-
 
 	public static void test(){
 		Graf g = new Graf();
@@ -102,13 +79,6 @@ public class Main {
 		g.printSasiedzi();
 		System.out.println(g.toString());
 		DFS(g);
-		System.out.println(g.toString());
-		g.printSasiedzi();
-		System.out.println("\n\n\n");
-		low(g);
-		for(int i = 0; i < low.length; i++)
-			System.out.print(low[i] + ", ");
-		System.out.println();
 	}
 	public static void konsola(){
 		Scanner in = new Scanner(System.in);
