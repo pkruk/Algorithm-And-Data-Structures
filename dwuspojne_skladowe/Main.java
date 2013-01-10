@@ -5,8 +5,9 @@ import java.io.*;
 public class Main { 
 	public static void main (String [] args) throws IOException
 	{
-		System.out.println(ANSI_BLUE + "HELLO");
+		System.out.println(ANSI_BLUE + "START");
 		test();
+		konsola();
 		System.out.println("END" + ANSI_RESET);
 	}
 
@@ -14,13 +15,23 @@ public class Main {
 	public static boolean visited[];
 	public static int nr[];
 	public static int low[];
+	public static String punktyArtykulacji = "";
 	public static void DFS(Graf g){
-		visited = new boolean[g.len];
-		nr = new int [g.len];
-		low = new int [g.len];
+		visited = new boolean[g.len]; // tablica statusu odwiedzony czy nie
+		nr = new int [g.len]; // tablica nr czasow
+		low = new int [g.len]; // tablica "wysokosci"
+		punktyArtykulacji = "";
 		for(int i = 0; i < g.len; low[i] = -1, nr[i] = -1, visited[i] = false,++i);
 		//DFS(g);
-		DFS_BRIDGES(g,0,-1);
+		System.out.println("MOSTY : ");
+		for(int i = 0; i < g.len; i++)
+			if (!visited[i] ) {
+				if (g.V.get(i).sasiedzi.size() >= 2 && i != 0)
+					punktyArtykulacji += "" + (i+1) + " ";
+				DFS_BRIDGES(g,i,-1);
+			}
+		System.out.println("PUNKTY ARTYKULACJI ");
+		System.out.println(punktyArtykulacji);
 	}
 
 	public static void DFS_BRIDGES(Graf g, int v, int ojciec_v){
@@ -31,16 +42,17 @@ public class Main {
 			int u = g.V.get(v).sasiedzi.get(i).index;
 			if ( u != ojciec_v )
 				if( !visited[u]){
-					DFS_BRIDGES(g,u,v);
-					System.out.println((v+1) + " " + (u +1));
-					low[v] = min(low[v],low[u]);
+					DFS_BRIDGES(g,u,v); //Normalny dfs do samego konca
+					low[v] = min(low[v],low[u]); // Cofamy sie wybierajac mniejsze
+					if(ojciec_v != -1 && low[u] >= nr[v])
+						punktyArtykulacji += "" + (v+1) +" ";
+					
 				}else {
-					System.out.println("****" + (v+1) + " " + (u+1));
-					low[v] = min(low[v],nr[u]);
+					low[v] = min(low[v],nr[u]); /// krawedz zwrotna 
 				}
 		}
 		if(low[v] == nr[v] && ojciec_v != -1)
-			System.out.println("Most : " + (v+1) + " --- " + (ojciec_v+1));
+			System.out.println("Most : " + (ojciec_v+1) + " --- " + (v+1));
 	}
 
 	public static void DFS_VISIT(Graf g, int u){
@@ -96,9 +108,10 @@ public class Main {
 			g.dodajSasiadow(i,tab);
 		}
 		System.out.println(".................................");
-		g.printSasiedzi();
+		//g.printSasiedzi();
 		System.out.println(".................................................................");
-		System.out.println(g.toString() + "\n");
+		DFS(g);
+		//System.out.println(g.toString() + "\n");
 		
 	}
 
