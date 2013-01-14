@@ -5,8 +5,8 @@ import java.io.*;
 public class Main { 
 	public static void main (String [] args) throws IOException
 	{
-		System.out.println(ANSI_BLUE + "START");
-		test();
+		System.out.println("START");
+		//test();
 		konsola();
 		System.out.println("END" + ANSI_RESET);
 	}
@@ -15,48 +15,115 @@ public class Main {
 	public static boolean visited[];
 	public static int nr[];
 	public static int low[];
-	public static String punktyArtykulacji = "";
-	public static void DFS(Graf g){
+	public static ArrayList <Integer> punktyArtykulacji = new ArrayList<Integer>();
+	public static LinkedList <Integer> dwuspojna = new LinkedList<Integer>();
+	public static ArrayList<Integer> mosty = new ArrayList <Integer>();
+	public static ArrayList<Integer> spojne = new ArrayList<Integer>();
+
+	public static void init(Graf g){
 		visited = new boolean[g.len]; // tablica statusu odwiedzony czy nie
 		nr = new int [g.len]; // tablica nr czasow
 		low = new int [g.len]; // tablica "wysokosci"
-		punktyArtykulacji = "";
+		time = 0;
 		for(int i = 0; i < g.len; low[i] = -1, nr[i] = -1, visited[i] = false,++i);
-		//DFS(g);
+		spojne.removeAll(spojne);
+		mosty.removeAll(mosty);
+		punktyArtykulacji.removeAll(punktyArtykulacji);
+		while (!dwuspojna.isEmpty())
+			dwuspojna.removeFirst();
+	}
+	public static void wyswietl(){
+		//spojne skladowe 
+		System.out.println("SPOJNE : ");
+		for (int i = 0; i < spojne.size(); i++)
+			if (spojne.get(i) != -1)
+				System.out.print(spojne.get(i) + " ");
+			else
+				System.out.println();
+		//END Spojne skladowe
+		System.out.println("DWUSPOJNA");
+		Collections.sort(dwuspojna);
+		if (dwuspojna.size() > 1){
+			int x = dwuspojna.remove(0);
+			int y = 0;
+			while(!dwuspojna.isEmpty()){
+				y = dwuspojna.remove(0);
+				for (int i = x; i < y; i++)
+					System.out.print((i+1) + " ");
+				x = y;
+				System.out.println();
+			}
+		}
+		System.out.println();
+		System.out.println();
 		System.out.println("MOSTY : ");
+		//wysweitlanie mostow
+		for (int i = 0; i < mosty.size(); i++)
+			if (mosty.get(i) != -1) 
+				System.out.print(mosty.get(i) + " ");
+			else
+				System.out.println();
+		//punkty artykulacji : 
+		for (int i = 0; i < punktyArtykulacji.size(); i++)
+			System.out.print(punktyArtykulacji.get(i) + " ");
+		System.out.println("END");
+	}
+	public static void DFS(Graf g){
+		//DFS(g);
+		init(g);
 		for(int i = 0; i < g.len; i++)
 			if (!visited[i] ) {
-				if (g.V.get(i).sasiedzi.size() >= 2 && i != 0)
-					punktyArtykulacji += "" + (i+1) + " ";
+				spojne.add(i+1);
+				if (g.V.get(i).sasiedzi.size() >= 2){
+					dwuspojna.addLast(i);
+					//punktyArtykulacji.add(i+1);
+				}
 				DFS_BRIDGES(g,i,-1);
+				spojne.add(-1);
 			}
-		System.out.println("PUNKTY ARTYKULACJI ");
-		System.out.println(punktyArtykulacji);
+			dwuspojna.addLast(g.V.size());
+			wyswietl();
 	}
-
+	public static int j = 0;
+	public static Deque <Integer> s = new Deque<Integer>();
 	public static void DFS_BRIDGES(Graf g, int v, int ojciec_v){
 		visited[v] = true;
 		time++;
-		nr[v] = time; g.V.get(v).d = time; low[v] = time;
+		nr[v] = time; low[v] = time; // ustawiamy odpowiednio low
+		//konczac dfs, wszystkie lowy sa rowne czasowi dojscia dfs
 		for (int i = 0; i < g.V.get(v).sasiedzi.size(); i++){
 			int u = g.V.get(v).sasiedzi.get(i).index;
 			if ( u != ojciec_v )
 				if( !visited[u]){
+					spojne.add(u+1);
+					s.addFirst(u);
 					DFS_BRIDGES(g,u,v); //Normalny dfs do samego konca
+					if(ojciec_v != -1 && low[u] >= nr[v]) {
+					//	System.out.println("pkt artykulacji" + (v+1));
+						punktyArtykulacji.add(v+1);
+						dwuspojna.addLast(v+1);
+						System.out.println("U : " + u +  " " + v);
+						if(s.size() > 2);
+							System.out.println(s.toString());
+						while(!s.isEmpty() && s.getLast() != u){
+							s.removeLast();
+						}
+						System.out.println(ANSI_RED + s.toString() + ANSI_RESET);
+						System.out.println();
+					}
+
 					low[v] = min(low[v],low[u]); // Cofamy sie wybierajac mniejsze
-					if(ojciec_v != -1 && low[u] >= nr[v])
-						punktyArtykulacji += "" + (v+1) +" ";
-					
 				}else {
 					low[v] = min(low[v],nr[u]); /// krawedz zwrotna 
 				}
 		}
-		if(low[v] == nr[v] && ojciec_v != -1)
-			System.out.println("Most : " + (ojciec_v+1) + " --- " + (v+1));
+		if(low[v] == nr[v] && ojciec_v != -1) {// d(u) <= low(v) 
+			mosty.add(ojciec_v+1); mosty.add(v+1); mosty.add(-1);
+		}
 	}
 
 	public static void DFS_VISIT(Graf g, int u){
-		visited[u] = true;
+		visited[u] = true;  
 		time++;
 		g.V.get(u).d = time; nr[u] = time;
 		for(int i = 0; i < g.V.get(u).sasiedzi.size(); i++)
@@ -88,14 +155,12 @@ public class Main {
 		g.dodajSasiadow(5,tab5);
 		int tab6[] = {4,6};
 		g.dodajSasiadow(6,tab6);
-		g.printSasiedzi();
-		System.out.println(g.toString());
 		DFS(g);
 	}
 	public static void konsola(){
+		System.out.println("KONSOLA : ");
 		Scanner in = new Scanner(System.in);
 		int rozmiar = in.nextInt();
-		System.out.println("rozmiar grafu" + rozmiar);
 		Graf g = new Graf();
 		for(int i = 0; i < rozmiar; i++)
 			g.add(i);
@@ -107,11 +172,8 @@ public class Main {
 			}
 			g.dodajSasiadow(i,tab);
 		}
-		System.out.println(".................................");
-		//g.printSasiedzi();
 		System.out.println(".................................................................");
 		DFS(g);
-		//System.out.println(g.toString() + "\n");
 		
 	}
 
