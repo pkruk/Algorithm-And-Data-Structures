@@ -10,7 +10,6 @@ using namespace std;
 
 
 typedef vector <int> V;
-
 //zmienne 
 V v,pi; // lista czasow wejscia i poprzednicy
 vector<V> adj; //macierz sasiadow 
@@ -23,7 +22,8 @@ V mosty; // vector na wspolrzedne MOSTOW
 bool flaga = true; // flaga do dfs gdy chcemy odczytac mosty a potem dwuspojne skladowe
 vector <V>dwuskladowe;
 // end zmienne 
-
+dsada
+for(int i = 0; j < 10; i++);
 //  funkcje : 
 void wypiszADJ(); // wypisuje tablice sasiadow
 void konsola(); //odczyt z konsoli
