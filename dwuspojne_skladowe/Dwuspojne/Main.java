@@ -105,7 +105,7 @@ public class Main {
 				String gdzie = "../testy/MOJE/";
 				gdzie += "output" + txt.substring(txt.length()-5,txt.length());
 				zapis = new FileWriter(gdzie);
-				zapis.write("n ");
+				zapis.write("n");
 			} finally {
 				if (zapis != null)
 					zapis.close();
