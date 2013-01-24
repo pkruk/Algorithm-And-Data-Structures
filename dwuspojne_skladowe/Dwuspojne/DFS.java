@@ -8,7 +8,7 @@ public class DFS {
 		for (int i = 0; i < g.len; i++){
 			if (visited[i] == false){
 				spojne.get(l).add(i);
-				if (g.sasiedzi.get(i).size() >= 2){
+				if (g.sasiedzi.get(i).size() > 2){
 					//Wierzchołek w jest punktem artykulacji, gdy: jest korzeniem i ma więcej niż jednego syna
 					pktArtykulacji.add(i+1);
 				}
@@ -20,7 +20,6 @@ public class DFS {
 		System.out.println();
 		return wynik();
 	}
-
 	public void dfs(int v){
 		low[v] = nr[v] = ++time;
 		visited[v] = true;
@@ -29,19 +28,23 @@ public class DFS {
 			int u = g.sasiedzi.get(v).get(i); // sasiad;
 			Edge tmp = new Edge(v,u); 
 			if (visited[u] == false){
-				p[u] = v; // poprzednik :D 
-				S.push(tmp);
+				p[u] = v; // poprzednik 
+				S.push(tmp); // STOS DWUSPOJNYCH SKLADOWYCH 
 				spojne.get(l).add(u); // nieodwiedzone
 				dfs(u);
-				if (low[u] >= nr[v] &&  !IN(pktArtykulacji,v+1)){
+				if (u != v && low[u] >= nr[v] &&  !IN(pktArtykulacji,v+1)){
 					/*    nie jest korzeniem, a dla przynajmniej jednego jego syna s spełniony jest warunek
 							low syna >= czas wejscia ojca 
 					*/
 					pktArtykulacji.add(v+1);
 				}
 				if (low[u] >= nr[v]){
-					//Wyznaczamy Dwuspojne skladowe wzdlug punktow artykulacji 
-					int waga = 0;
+					/*
+					 Jeśli jakiś wierzchołek  v posiada syna s w drzewie DFS, takiego że $low[s] >= d[v]  wtedy 
+					 s  nie posiada krawędzi wtórnej do żadnego z przodków  v , w takim razie  v jest punktem artykulacji 
+					*/
+					//Wyznaczamy Dwuspojne skladowe wedlug punktow artykulacji 
+					int waga = 0; // do wyznaczania mostow, jednokrawedziowa dwuspojna to MOST 
 					dwuspojne.add(new ArrayList<Integer>());
 					do { 
 						tmp = S.peek();
@@ -61,9 +64,9 @@ public class DFS {
 
 				} else 
 					low[v] = Math.min(low[v],low[u]);
-			} else if( p[v] != u && nr[v] > nr[u]) { //OJCIEC 
+			} else if( p[v] != u && nr[v] > nr[u]) { // ODWIEDZONY 
 				S.push(tmp);
-				low[v] = Math.min(low[v],nr[u]);
+				low[v] = Math.min(low[v],nr[u]); //krawedz wsteczna (: 
 			}
 		}
 	}
