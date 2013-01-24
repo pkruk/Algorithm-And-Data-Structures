@@ -67,10 +67,10 @@ public class Main {
 			while(plikWej.hasNext()){
 				if(plikWej.hasNextInt()){
 					int rozmiar = plikWej.nextInt();
-					System.out.println("---" + rozmiar);
+					//System.out.println("---" + rozmiar);
 					for (int i = 0; i < rozmiar; i++){
 						g.sasiedzi.get(licznik).add(plikWej.nextInt() -1);
-						System.out.print(g.sasiedzi.get(licznik).get(i) + " ");
+						//System.out.print(g.sasiedzi.get(licznik).get(i) + " ");
 					}	
 					System.out.println();
 					licznik++;
@@ -84,23 +84,56 @@ public class Main {
 				plikWej.close();
 		}
 		//g.printSasiedzi();
-		String wynik = praca(g);
-		FileWriter zapis = null;
-		try { 
-			String gdzie = "../testy/MOJE/";
-			gdzie += "output" + txt.substring(txt.length()-5,txt.length());
-			System.out.println("~" + wynik);
-			zapis = new FileWriter(gdzie);
-			zapis.write(wynik);
-		} catch (IOException ex) {
-			System.err.println("Blad wyjscia");
-		} finally {
-			if (zapis != null)
-				zapis.close();
+		if(sprawdzSkierowany(g) == true){
+			String wynik = praca(g);
+			FileWriter zapis = null;
+			try { 
+				String gdzie = "../testy/MOJE/";
+				gdzie += "output" + txt.substring(txt.length()-5,txt.length());
+				System.out.println("~" + wynik);
+				zapis = new FileWriter(gdzie);
+				zapis.write(wynik);
+			} catch (IOException ex) {
+				System.err.println("Blad wyjscia");
+			} finally {
+				if (zapis != null)
+					zapis.close();
+			}
+		} else {
+			FileWriter zapis = null;
+			try {
+				String gdzie = "../testy/MOJE/";
+				gdzie += "output" + txt.substring(txt.length()-5,txt.length());
+				zapis = new FileWriter(gdzie);
+				zapis.write("n ");
+			} finally {
+				if (zapis != null)
+					zapis.close();
+			}
 		}
 	}
 
+	public static  boolean sprawdzSkierowany(Graf g){
+		for (int i = 0; i < g.len; i++){
+			ArrayList<Integer> tmp = g.sasiedzi.get(i);
+			for (int j = 0; j < tmp.size(); j++){
+				int temp = tmp.get(j);
+				if(IN(g.sasiedzi.get(temp),i) == false){
+					System.out.println("SKIEROWANY!!!!");
+					return false;
+				}
 
+			}
+		}
+		return true;
+	}
+
+	public static boolean IN(ArrayList<Integer> x , int k){
+		for (int i = x.size() -1; i >= 0; i--)
+			if ( x.get(i) == k)
+				return true;
+		return false;
+	}
 	public static void wyswietl(String a){
 		System.out.println("~ " + a);
 	}
