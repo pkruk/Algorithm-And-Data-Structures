@@ -12,4 +12,4 @@ Dwuspojne:
 MOSTY
 2 3 
 PKT ARTYKULACJI
-1 2 3 5 11 13 
+2 3 5 13 

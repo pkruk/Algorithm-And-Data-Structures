@@ -7,6 +7,7 @@ public class DFS {
 		spojne.add(new ArrayList<Integer>());
 		for (int i = 0; i < g.len; i++){
 			if (visited[i] == false){
+				root_dfs = i;
 				spojne.get(l).add(i);
 				if (g.sasiedzi.get(i).size() > 2){
 					//Wierzchołek w jest punktem artykulacji, gdy: jest korzeniem i ma więcej niż jednego syna
@@ -20,6 +21,7 @@ public class DFS {
 		System.out.println();
 		return wynik();
 	}
+	public int root_dfs = 0;
 	public void dfs(int v){
 		low[v] = nr[v] = ++time;
 		visited[v] = true;
@@ -32,7 +34,7 @@ public class DFS {
 				S.push(tmp); // STOS DWUSPOJNYCH SKLADOWYCH 
 				spojne.get(l).add(u); // nieodwiedzone
 				dfs(u);
-				if (u != v && low[u] >= nr[v] &&  !IN(pktArtykulacji,v+1)){
+				if (v != root_dfs  && low[u] >= nr[v] &&  !IN(pktArtykulacji,v+1)){
 					/*    nie jest korzeniem, a dla przynajmniej jednego jego syna s spełniony jest warunek
 							low syna >= czas wejscia ojca 
 					*/
