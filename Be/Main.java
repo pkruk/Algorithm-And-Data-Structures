@@ -12,7 +12,6 @@ public class Main {
 
 	public static void main(String[] args) {
 		BTree a = new BTree(2);
-		a.testDelete();
 		BTree b = new BTree(2);
 		b.test_Insert(14);
 	}

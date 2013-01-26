@@ -35,7 +35,7 @@ public class DFS {
 				spojne.get(l).add(u); // nieodwiedzone
 				dfs(u);
 				if (v != root_dfs  && low[u] >= nr[v] &&  !IN(pktArtykulacji,v+1)){
-					/*    nie jest korzeniem, a dla przynajmniej jednego jego syna s spełniony jest warunek
+					/*  v nie jest korzeniem, a dla przynajmniej jednego jego syna s spełniony jest warunek
 							low syna >= czas wejscia ojca 
 					*/
 					pktArtykulacji.add(v+1);
