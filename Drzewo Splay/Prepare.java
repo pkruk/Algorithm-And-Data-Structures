@@ -1,32 +1,44 @@
 import java.util.*;
+import java.io.*;
+import java.text.*;
 
 public class Prepare{
 
 	public void optimal_bst(){
 		// init start
-		n = p.size();
-		double w[][] = new double [n+2][n+2];
-		e = new double [n+2][n+2];
+		n = q.size();
+		double w[][] = new double [n][n];
+		e = new double [n][n];
 		//Cormen style n+1 NUMEROWANE OD 1 
 		// n NUMEROWANE OD 0!
-		root = new int [n+2][n+2];
-		for (int i = 1; i < n+2; i++){
-			e[i][i] = q.get(i-1).p;
-			w[i][i] = q.get(i-1).p;
+		root = new int [n][n];
+		for (int i = 0; i < n; i++){
+			e[i][i] = q.get(i).p;
+			w[i][i] = q.get(i).p;
 		}	
+
 		System.out.println("E : ");
 		print(e);
-		n+=2;
-		for (int l = 1; l < n; l++){
-			for (int i = 1; i < n -l ; i++){
-				int j = i + l -1;
-				e[i][j] = 100.0;
-				System.out.println("i " + i + " j " + j + " w[i][j-1] " + w[i][j] + " p " + p.get(j-1).p + " q : " + q.get(j).p);
-				w[i][j] = w[i][j] + p.get(j-1).p + q.get(j).p;
-				
+
+		for (int l = 0; l < n; l++){
+			for (int i = 0; i < n -l -1; i++){
+				int j = i + l + 1;
+				e[i][j] = 100000;
+				w[i][j] = w[i][j-1] + p.get(j-1).p + q.get(j).p;
+				w[i][j] = roundToDecimals(w[i][j],2);
+				for (int r = i; r < j; r++){
+					double t  = e[i][r] + e[r+1][j] + w[i][j];
+					t = roundToDecimals(t,2);
+					if (t < e[i][j]){
+						e[i][j] = t;
+						root[i][j] = r+1;
+					}
+				}
 			}
 		}
-		System.out.println(n);
+
+
+		
 		
 		System.out.println("W : ");
 		print(w);
@@ -69,6 +81,13 @@ public class Prepare{
 		System.out.println();
 	}
 
+	double roundToDecimals(double d, int c) {
+		int t = (int)((d*Math.pow(10,c)));
+		/*if ( t % 5 == 0 || t % 6 == 0 || t % 7 == 0 || t % 8 == 0 || t % 9 == 0)
+			t+=1;*/
+		double x = (((double)t)/Math.pow(10,c));
+		return x;
+	}
 	public Prepare(){
 
 	}
