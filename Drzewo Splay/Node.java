@@ -10,18 +10,18 @@ public class Node{
 		left = right = null;
 		parent = null;
 	}
-	public Node(int i, double pr){
+	public Node(int i, float pr){
 		this.ile = i;
 		this.p = pr;
 		key = "";
 	}
-	public Node(int i, double pr, String x){
+	public Node(int i, float pr, String x){
 		this.ile = i;
 		this.p = pr;
 		this.key = x;
 	}
 	public int index;
-	public double p; // prawdopodobienstwo
+	public float p; // prawdopodobienstwo
 	public int ile; //ile razy wystapilo dane slowo
 	public String key; // zdanie kluczowe
 	Node left, right;
