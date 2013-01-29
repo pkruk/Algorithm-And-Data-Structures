@@ -3,6 +3,10 @@ import java.io.*;
 
 public class Node{
 
+	public String toString(){
+		return "" +ID + ": " + "(" + x + "," + y + ")";
+	}
+
 	public Node(int x, int y){
 		this.x = x;
 		this.y = y;
@@ -16,7 +20,7 @@ public class Node{
 
 	public Node(){
 		x = y = -1;
-		ID = "";
+		ID = ' ';
 	}
 
 	public int x;
