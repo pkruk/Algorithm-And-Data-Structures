@@ -1,6 +1,7 @@
 import java.util.*;
 import java.io.*;
 import java.text.*;
+
 public class Main{
 
 	public static void main(String[] args)throws IOException {
@@ -25,7 +26,9 @@ public class Main{
 			tab[i] = new Node(a,b,((char) ('A' + i)));
 		}
 		Komiwojazer haron = new Komiwojazer(tab);
-		haron.wyswietl();
+		haron.start();
+		Dynamic a = new Dynamic(tab);
+		a.start();
 	}
 
 }
