@@ -1,0 +1,26 @@
+in:
+
+Liczba punktów n oraz wspó³rzêdne tych punktów:
+(x1,y1),(x2,y2),...,(xn,yn)  (xi<xi+1)
+
+zapis:
+7
+0 6
+1 0
+2 3
+5 4
+6 1
+7 5
+8 2
+
+odpowiada danym wejsciowym:
+n=7 (n - liczba punktow)
+A(0,6) B(1,0) C(2,3) D(5,4) E(6,1) F(7,5) G(8,2)
+
+
+
+out:
+
+
+d³ugoœæ najkrótszego cyklu bitonicznej (w zaokr¹gleniu do 3 miejsc po przecinku)
+najkrótsza ³amana w postaci AB..A

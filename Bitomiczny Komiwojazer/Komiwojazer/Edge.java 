@@ -1,0 +1,16 @@
+import java.util.*;
+import java.io.*;
+
+public class Edge {
+
+	public Edge(int x, int y){
+		this.from = x;
+		this.to = y;
+	}
+
+	public Edge(){
+		from = to = -1;
+	}
+	
+	int from, to;
+}
